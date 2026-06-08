@@ -1,7 +1,8 @@
 # 初始化项目
 
-> **触发语**：`阅读 playbook/，初始化项目`  
+> **触发语**：`阅读 playbook/，初始化项目`（可加：**初始化后端结构** / **初始化前端结构** / **初始化前后端结构**）  
 > **产出**：`memory/` + 根目录 `AGENTS.md` + `.cursor/rules/` + `.cursor/skills/`  
+> **可选产出**：`backend/` 与/或 `frontend/` 代码骨架 — 见 §3 Step 5  
 > **前提**：业务仓库已放入 `playbook/`（独立 git 子目录或 submodule）；已有 PRD/原型/设计说明等文档来源。
 
 把 playbook 拷进新项目后，用上面一句话即可让代理按本文生成**整套 AI 协作基线**。  
@@ -38,6 +39,8 @@ memory/
 ```
 
 **可选**：若项目属于某领域模式（如规则审文档 RAG），额外生成领域 Skill + 领域 Rule — 见 §6。
+
+**可选**：若用户要求初始化代码结构，额外生成 `backend/` 与/或 `frontend/` 骨架 — 见 §3 Step 5。
 
 ---
 
@@ -272,7 +275,8 @@ description: >-
 2. 建根目录 AGENTS.md（薄层：命令 + 导航 + 边界）
 3. 建 `.cursor/rules/{slug}-agent-nav.mdc`（alwaysApply）
 4. 若有明确领域（如 RAG 审文档）→ 按 project-init §6 加领域 Skill/Rule
-5. 勿把工具参数写进 memory；勿建空壳目录
+5. 若用户要求 → 按 project-init §3 Step 5 + `backend/project-structure.md` / `frontend/project-structure.md` 搭代码骨架
+6. 勿把工具参数写进 memory；勿建空壳目录
 
 ## 维护
 
@@ -280,11 +284,59 @@ description: >-
 - 工具踩坑 → `playbook/patterns/playbook-contribute.md`
 ```
 
-### Step 5 — 向用户汇报
+### Step 5 — 可选：初始化代码结构
+
+用户指令含以下**任一**表述时执行（可组合）：
+
+| 用户表述 | 执行 |
+|----------|------|
+| 初始化后端结构 | 仅 Step 5.1 |
+| 初始化前端结构 | 仅 Step 5.2 |
+| 初始化前后端结构 | Step 5.1 + Step 5.2 |
+
+**权威模板**（勿凭记忆编造目录）：
+
+- 后端 → [`playbook/backend/project-structure.md`](../backend/project-structure.md)
+- 前端 → [`playbook/frontend/project-structure.md`](../frontend/project-structure.md)
+
+#### 5.1 后端骨架
+
+1. 若已有 `backend/` 且含 `src/main.py`，**不覆盖**业务文件；仅补缺失的骨架文件并汇报缺口。
+2. 按 project-structure 创建目录树与最小可运行文件：
+   - `pyproject.toml`、`.env.example`、`.gitignore`、`README.md`
+   - `src/main.py`、`src/api/router.py`、`src/api/deps.py`、`src/api/endpoints/health.py`
+   - `src/core/settings.py`、`src/core/database.py`
+   - `src/models/base.py`、空 `schemas/` / `repositories/` / `services/` / `agents/`
+   - `tests/test_health.py`、`data/.gitkeep`、`scripts/.gitkeep`
+3. 占位符替换：`{项目名}`、`{slug}`（数据库文件名等）。
+4. `AGENTS.md` 的「常用命令」节补充后端启动与 `pytest`（若 Step 2 已写则更新）。
+5. 执行 `uv sync` + `uv run pytest`（或说明用户需本地执行）。
+
+#### 5.2 前端骨架
+
+1. 若已有 `frontend/` 且含 `src/App.jsx`，**不覆盖**业务文件；仅补缺失的骨架文件。
+2. 按 project-structure 创建：
+   - `package.json`、`vite.config.js`、`index.html`
+   - `src/main.jsx`、`src/App.jsx`、`src/index.css`、`src/polyfills.js`（空或最小）
+   - `src/components/MainLayout.jsx` 及通用壳组件占位
+   - `src/context/AppStateContext.jsx`（最小 Provider）
+   - `src/pages/DashboardPage.jsx`、`src/pages/SettingsPage.jsx`
+   - `src/api/health.js`、`src/domain/constants.js`、`src/utils/confirm.js`
+3. `AGENTS.md` 补充 `npm install` / `npm run dev`。
+4. 执行 `npm install` + `npm run build`（或说明用户需本地执行）。
+
+#### 5.3 结构与 AI 基线关系
+
+- **只初始化项目**（默认）：仅 Step 1～4，**不**创建 `backend/` / `frontend/`。
+- **初始化项目 + 前后端结构**：先完成 Step 1～4，再 Step 5；memory / AGENTS 中技术栈与命令须与骨架一致。
+- 业务域文件（审核、规则提取等）**不在**结构初始化时批量生成 — 按 PRD 后续迭代。
+
+### Step 6 — 向用户汇报
 
 列出已创建文件路径，并说明：
 
 - 日常开发：代理先读 `AGENTS.md` → memory → playbook
+- 写后端/前端：先读 `playbook/backend/project-structure.md` 或 `playbook/frontend/project-structure.md`
 - 项目结束：按 `playbook-contribute.md` 把工具经验合并回 playbook 仓库
 
 ---
@@ -316,6 +368,24 @@ slug：{小写短横线，如 my-app}
 - AGENTS.md 保持薄层（命令 + 导航 + 边界）
 - 工具经验不写进 memory
 - 完成后列出创建的文件清单
+```
+
+**带代码结构**（三选一或组合，追加到指令末尾）：
+
+```text
+并初始化后端结构
+```
+
+```text
+并初始化前端结构
+```
+
+```text
+并初始化前后端结构
+
+结构须严格遵循：
+- playbook/backend/project-structure.md
+- playbook/frontend/project-structure.md
 ```
 
 ---
@@ -365,7 +435,9 @@ alwaysApply: false
 ## 7. 反模式
 
 - 起步就建 `00-index/`～`40-execution/` 编号体系或 10 个空 md
+- 初始化结构时覆盖已有业务代码（应只补骨架、汇报已有文件）
 - 把 QTP 的 AGENTS.md / memory 结构原样复制到新项目
+- 不读 project-structure.md 凭印象搭目录（层名、调用方向须与 playbook 一致）
 - memory 里写向量 top-k、组件 API、框架教程
 - AGENTS.md 超过 150 行（应拆链到 memory）
 - 只建 memory 不建 AGENTS.md / Rules（代理缺少跨工具入口）

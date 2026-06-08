@@ -11,7 +11,7 @@
 | resultType | Pass / Partial / Fail / N/A / Review |
 | confidence | 0–1，整条规则 |
 | evidenceBlockIds | **默认 1，最多 3** |
-| evidenceScores | 与 ids 一一对应 `{blockId, confidence}`，块 ≥0.5 才可引用 |
+| evidenceScores | 与 ids 一一对应 `{blockId, confidence}`，块 **≥0.7** 才可引用落库 |
 | quote | 来自 evidence.text，建议 ≤300 字 |
 | reason | 说明每块如何支撑规则，≤200 字 |
 
@@ -26,11 +26,11 @@
 
 ## 置信度使用
 
-| 层级 | 字段 | 用途 |
-|------|------|------|
-| UI 规则行 | Judge confidence | 展示 |
-| UI 证据行 | evidenceScores | 展示 |
-| 门控 | 综合分公式 | 自动 Review |
+| 层级 | 字段 | 阈值（默认） | 用途 |
+|------|------|-------------|------|
+| 规则综合 | 门控公式 + `reviewConfidenceThreshold` | **0.75** | Pass/Partial/N/A → Review |
+| 证据块 | Judge `evidenceScores` + `evidenceBlockMinConfidence` | **0.7** | 低于阈值 **不落库/不展示**；Judge system prompt **运行时读取该配置** |
+| 语义兜底 | BGE `evidenceSemanticMinScore` + 规则 LLM 置信 | **0.35** + **<0.75** | Pass/Partial → Review |
 
 ## 反模式
 

@@ -19,7 +19,7 @@
 
 审核 executor 在 `_evidence_ref_payload` 落库前，对每条 cited parent 块：
 
-1. 用 parent-child registry 的 `source_block_ids_for_parent(parent_id)` 取 **leaf 列表**（文档顺序）
+1. 用 parent-child registry 的 `source_block_ids_for_parent(parent_id)` 取 **leaf 列表**（文档顺序，**含 TBL-***）
 2. 从当次 `parsed.blocks` 查每个 leaf 的 `DocumentBlock`
 3. 调用 `build_locate_segments()` 写入 `locateSegments`
 4. 用 `page_range_from_segments()` 回写证据顶层 `pageFrom` / `pageTo`
@@ -60,7 +60,7 @@
 | 现象 | 处理 |
 |------|------|
 | 前端仍走旧策略 | 须**重跑审核**才有 `locateSegments` |
-| excerpt 太短匹配失败 | 左栏展示用完整 `evidence.text`；匹配仍用 excerpt |
+| excerpt 太短匹配失败 | 左栏展示用完整 `evidence.text`；`sourceBlockIds` 含 TBL 时整段展示 |
 | 解析/索引版本变更 | 须重跑审核；segments 与旧 parsed 不对齐 |
 
 ## 反模式

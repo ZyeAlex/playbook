@@ -12,7 +12,7 @@
 ```
 
 代理将按 [`patterns/project-init.md`](./patterns/project-init.md) 生成 **`memory/` + `AGENTS.md` + `.cursor/rules/` + `.cursor/skills/`**。  
-（可附带 PRD/原型路径与项目名；详见 project-init §4 完整指令模板。）
+（可附带 PRD/原型路径与项目名；可加 **初始化后端结构** / **初始化前端结构** / **初始化前后端结构**；详见 project-init §4。）
 
 ## 目录分桶
 
@@ -32,7 +32,8 @@ playbook/
 
 | 层级 | 何时读 | 路径 |
 |------|--------|------|
-| L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor） | [`patterns/project-init.md`](./patterns/project-init.md) |
+| L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor；可选前后端骨架） | [`patterns/project-init.md`](./patterns/project-init.md) |
+| L0b | 后端 / 前端目录分层（初始化结构时必读） | [`backend/project-structure.md`](./backend/project-structure.md)、[`frontend/project-structure.md`](./frontend/project-structure.md) |
 | L1 | docx 预览 + 原文高亮 | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md`；定位层见 `backend/evidence-locate-segments.md` |
 | L2 | 文档审核 RAG 后端 | `document/` → `rag/` 按序阅读 |
 | L3 | Excel 规则提取 | `backend/excel-rule-extract.md` |
@@ -66,6 +67,7 @@ playbook/
 
 | 文件 | 工具/方案 |
 |------|-----------|
+| [project-structure.md](./frontend/project-structure.md) | **Vite + React 目录分层与初始化骨架** |
 | [vite-react-antd.md](./frontend/vite-react-antd.md) | Vite + React + Ant Design |
 | [docx-preview.md](./frontend/docx-preview.md) | docx-preview 渲染与版面 |
 | [evidence-highlight-dom.md](./frontend/evidence-highlight-dom.md) | 证据高亮与多锚点跳转 |
@@ -93,6 +95,7 @@ playbook/
 
 | 文件 | 工具/方案 |
 |------|-----------|
+| [project-structure.md](./backend/project-structure.md) | **FastAPI 目录分层与初始化骨架** |
 | [evidence-locate-segments.md](./backend/evidence-locate-segments.md) | 审核证据 `locateSegments[]` 落库与块索引 API |
 | [async-job-resume.md](./backend/async-job-resume.md) | 长任务与热重载续跑 |
 | [sse-event-bus.md](./backend/sse-event-bus.md) | FastAPI SSE 总线 |
