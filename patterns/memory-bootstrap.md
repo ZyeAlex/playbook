@@ -135,7 +135,7 @@ README.md、sources.md、current.md。
 
 - **阶段变化** → 改 `current.md`（覆盖旧说法）
 - **需求变更** → 改 `sources.md` + README 的 `updated` 日期（可选）
-- **工具踩坑** → 合并进 `playbook/`，不要写进 memory
+- **工具踩坑** → 按 `playbook-contribute.md` 合并进 playbook，不要写进 memory
 - **拆文件** → 更新 README 文件表，删掉已迁移的旧节
 
 ## 反模式

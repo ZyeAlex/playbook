@@ -32,10 +32,13 @@ playbook/
 
 ## 维护协议（每个项目结束时）
 
+**完整步骤** → [`patterns/playbook-contribute.md`](./patterns/playbook-contribute.md)
+
 1. **先找桶再找文件**：在对应分桶下追加/修订，不重复建同主题文件。
 2. **写法**：`## 适用场景` → `## 推荐参数` → `## 踩坑与解法` → `## 反模式`。
 3. **冲突合并**：保留更普适说法，或并列分场景；删过期条目。
 4. **索引同步**：新建文件后更新本文索引表。
+5. **提交**：在 playbook 独立仓库里 `commit` + `push`（与业务项目仓库分开）。
 
 ## 原子索引
 
@@ -44,6 +47,7 @@ playbook/
 | 文件 | 内容 |
 |------|------|
 | [memory-bootstrap.md](./patterns/memory-bootstrap.md) | **如何创建 memory**（起步结构、步骤、AI 指令） |
+| [playbook-contribute.md](./patterns/playbook-contribute.md) | **如何把项目经验提取进 playbook**（分桶、写法、提交） |
 | [rag-document-review.md](./patterns/rag-document-review.md) | 规则审文档：架构模式与硬约束 |
 
 ### `frontend/`
