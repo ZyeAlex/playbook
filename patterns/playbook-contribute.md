@@ -24,7 +24,7 @@
 打开 `playbook/README.md` 索引表，按**工具或方案**选分桶：
 
 - 浏览器预览 / 高亮 → `frontend/`
-- 解析、切片、PDF → `document/`
+- 解析、切片、PDF → `docs/`
 - 向量、重排、Judge → `rag/`
 - 长任务、SSE、存储 → `backend/`
 - 部署、模型离线 → `ops/`

@@ -5,14 +5,14 @@
 
 ## 新项目一键初始化
 
-把 `playbook/` 放进业务仓库后，对 Cursor 说：
+把 `playbook/` 放进业务仓库后，执行：
 
 ```text
 阅读 playbook/，初始化项目
 ```
 
-代理将按 [`patterns/project-init.md`](./patterns/project-init.md) 生成 **`memory/` + `AGENTS.md` + `.cursor/rules/` + `.cursor/skills/`**。  
-（可附带 PRD/原型路径与项目名；可加 **初始化后端结构** / **初始化前端结构** / **初始化前后端结构**；详见 project-init §4。）
+代理将按 [`patterns/project-init.md`](./patterns/project-init.md) 生成 **`docs/` + `memory/` + `AGENTS.md`**。  
+（`docs/` 放 PRD/原型等设计文档；可附带文档路径与项目名；可加 **初始化后端结构** / **初始化前端结构** / **初始化前后端结构**；详见 project-init §4。）
 
 ## 目录分桶
 
@@ -21,7 +21,7 @@ playbook/
 ├── README.md
 ├── patterns/     # 跨工具的领域模式
 ├── frontend/     # 浏览器预览、高亮、SSE UI
-├── document/     # 文档解析与切片
+├── docs/         # 文档解析与切片
 ├── rag/          # 向量、重排、漏斗、Judge
 ├── backend/      # 服务基建、存储、配置
 ├── ops/          # 部署与运维
@@ -32,10 +32,10 @@ playbook/
 
 | 层级 | 何时读 | 路径 |
 |------|--------|------|
-| L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor；可选前后端骨架） | [`patterns/project-init.md`](./patterns/project-init.md) |
+| L0 | **新项目：初始化项目**（docs + memory + AGENTS.md；可选前后端骨架） | [`patterns/project-init.md`](./patterns/project-init.md) |
 | L0b | 后端 / 前端目录分层（初始化结构时必读） | [`backend/project-structure.md`](./backend/project-structure.md)、[`frontend/project-structure.md`](./frontend/project-structure.md) |
 | L1 | docx 预览 + 原文高亮（segments / Context Unit 合并） | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md`；契约 `backend/evidence-locate-segments.md` |
-| L2 | 文档审核 RAG 后端 | `document/` → `rag/` 按序阅读 |
+| L2 | 文档审核 RAG 后端 | `docs/` → `rag/` 按序阅读 |
 | L3 | Excel 规则提取 | `backend/excel-rule-extract.md` |
 | L4 | 模型、热重载、长任务 | `ops/` + `backend/async-job-resume.md` |
 | L5 | 验收 | `testing/acceptance.md` |
@@ -74,13 +74,13 @@ playbook/
 | [pdfjs-highlight.md](./frontend/pdfjs-highlight.md) | pdf.js + bbox 坐标 |
 | [sse-long-task-ui.md](./frontend/sse-long-task-ui.md) | SSE 长任务 UI |
 
-### `document/`
+### `docs/`
 
 | 文件 | 工具/方案 |
 |------|-----------|
-| [docx-parser.md](./document/docx-parser.md) | python-docx 结构化解析 |
-| [chunking-parent-child.md](./document/chunking-parent-child.md) | Parent-Child 切片 |
-| [pdf-pymupdf-ocr.md](./document/pdf-pymupdf-ocr.md) | PyMuPDF + RapidOCR |
+| [docx-parser.md](./docs/docx-parser.md) | python-docx 结构化解析 |
+| [chunking-parent-child.md](./docs/chunking-parent-child.md) | Parent-Child 切片 |
+| [pdf-pymupdf-ocr.md](./docs/pdf-pymupdf-ocr.md) | PyMuPDF + RapidOCR |
 
 ### `rag/`
 

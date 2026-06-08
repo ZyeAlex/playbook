@@ -5,7 +5,7 @@
 后端返回 `evidences[]`（`text`、`blockType`、`sourceBlockIds`、可选 **`locateSegments[]`**），在已渲染 docx HTML 上定位高亮，支持多处跳转。  
 前置：[`docx-preview.md`](./docx-preview.md)（**无 `data-block-id`**）。  
 后端 segment 契约：[`../backend/evidence-locate-segments.md`](../backend/evidence-locate-segments.md)。  
-Context Parent 含整表：[`../document/chunking-parent-child.md`](../document/chunking-parent-child.md)。
+Context Parent 含整表：[`../docs/chunking-parent-child.md`](../docs/chunking-parent-child.md)。
 
 ## 总流程
 
