@@ -33,7 +33,7 @@ playbook/
 | 层级 | 何时读 | 路径 |
 |------|--------|------|
 | L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor） | [`patterns/project-init.md`](./patterns/project-init.md) |
-| L1 | docx 预览 + 原文高亮 | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md` |
+| L1 | docx 预览 + 原文高亮 | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md`；定位层见 `backend/evidence-locate-segments.md` |
 | L2 | 文档审核 RAG 后端 | `document/` → `rag/` 按序阅读 |
 | L3 | Excel 规则提取 | `backend/excel-rule-extract.md` |
 | L4 | 模型、热重载、长任务 | `ops/` + `backend/async-job-resume.md` |
@@ -93,6 +93,7 @@ playbook/
 
 | 文件 | 工具/方案 |
 |------|-----------|
+| [evidence-locate-segments.md](./backend/evidence-locate-segments.md) | 审核证据 `locateSegments[]` 落库与块索引 API |
 | [async-job-resume.md](./backend/async-job-resume.md) | 长任务与热重载续跑 |
 | [sse-event-bus.md](./backend/sse-event-bus.md) | FastAPI SSE 总线 |
 | [excel-rule-extract.md](./backend/excel-rule-extract.md) | Excel 流式规则提取 |

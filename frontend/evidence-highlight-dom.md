@@ -2,57 +2,100 @@
 
 ## 适用场景
 
-后端返回 `evidences[]`（含 `text`、`blockType`、`sourceBlockIds`），在前端已渲染的 docx HTML 上定位并高亮，支持多处跳转。
+后端返回 `evidences[]`（含 `text`、`blockType`、可选 **`locateSegments[]`**），在已渲染 docx HTML 上定位高亮，支持多处跳转。  
+前置阅读：[`docx-preview.md`](./docx-preview.md)（**无 `data-block-id`**）。
+
+后端定位层契约：[`../backend/evidence-locate-segments.md`](../backend/evidence-locate-segments.md)。
+
+## 总流程
+
+```mermaid
+flowchart TD
+  A[evidences] --> B{有 locateSegments?}
+  B -->|是| C[locateBySegments 逐段匹配]
+  B -->|否| D[strategies.js legacy]
+  C --> E[mergeAdjacentLocateGroups]
+  D --> F[expandParagraphRun 等]
+  E --> G[highlight groups]
+  F --> G
+  G --> H[DocxSourceViewer 按组跳转]
+```
 
 ## 策略分派
 
-| blockType | 策略 |
-|-----------|------|
-| paragraph | 匹配 `<p>` 文本 |
-| table | 先「表 N-M」表题，再 `<table>` / `<tr>` |
-| table_row | 匹配 `<tr>` 或 `<td>` 所在行 |
+| 条件 | 模块 | 行为 |
+|------|------|------|
+| `locateSegments.length > 0` | `locateBySegments.js` | 逐段 excerpt 匹配；**禁用** `expandParagraphRun` |
+| 无 segments（旧任务） | `strategies.js` | 按 `blockType` 分派 + parent 多段 run 扩展 |
 
-## 段落
+### Segment 类型 → DOM
 
-1. 从 `evidence.text` 生成候选片段（去噪、分行）
-2. **`findSmallestMatch`**：在容器内找**最短可匹配**片段，降低误匹配整章概率
-3. **`used` Set**：同规则多条证据不抢同一 DOM 节点
+| blockType / locateKind | 行为 |
+|------------------------|------|
+| paragraph / body | 容器内 `findSmallestMatch(excerpt)`；排除 table 内 `<p>`、目录行 |
+| table / table_body | 表体文本 / 表题策略（`locateTableElements`） |
+| table_row | `<tr>` / `<td>` |
+| caption（旧数据） | **跳过**，不参与定位与展示 |
 
-### Parent 多段（`sourceBlockIds.length > 1`）
+### Legacy 段落（无 segments）
 
-- 按 **sourceBlockIds 文档顺序** 找锚点段落
-- 从锚点 **`expandParagraphRun`** 向下扩展连续 `<p>`，实现整段 parent 高亮
-- **不要**用列表符号（如 `b)`）向前扩展——易错位到上一列表项
+1. 从 `evidence.text` 生成候选片段
+2. **`findSmallestMatch`**：最短可匹配节点，降低误匹配整章
+3. **`used` Set**：同规则多条证据不抢同一 DOM
+4. **`sourceBlockIds.length > 1`**：首段锚点 + **`expandParagraphRun`** 向下扩展连续 `<p>`
 
-### 同块多角色列表（a/b/c）
+## 分页与归一化
 
-多行且语义角色不同时：按行分别匹配，禁用「最长片段优先」。
+- **pageFrom**：`resolveSearchContainer` 选 docx section；segment 级优先于 evidence 级
+- **normalizeText**：全角连字符/冒号（`－`→`-`、`：`→`:`）后去空白
+- **TOC 排除**：`/^\d+(\.\d+)*\s+.+\s+\d{1,4}$/` 且无句号 → 跳过该 `<p>`
 
-## 表格
+## 相邻段落合并
 
-1. 优先：`表13-1` 类 caption 文本 → 其后第一个 `<table>`
-2. 回退：表体单元格文本匹配 `<tr>`
-3. 过滤纯表头候选，避免只亮表头行
+逐 leaf 生成的 segments 在 UI 与跳转时**合并连续 paragraph 组**：
 
-## 多处跳转 UI
+- **展示**：`groupAdjacentParagraphSegments` — 连续 body 段落合成一块；caption（旧）仅作分界
+- **定位**：`mergeAdjacentLocateGroups` — 相邻段落命中 DOM 合并为一组高亮
+- **正文**：左栏用完整 `evidence.text` 按 excerpt 锚点还原（`textForParagraphGroup`），非仅 120 字 excerpt
+- **折叠**：>420 字折叠，收起预览 240 字（`EvidenceTextBlock`）
 
-- 每组命中存 `{ elements[], evidence }`
-- 普通高亮 class + `active` class 区分当前处
-- `scrollIntoView({ block: 'center', behavior: 'smooth' })`
+表格段与段落段**同一套** mark + `EvidenceTextBlock` 样式，不用单独卡片。
+
+## 位置元信息去重
+
+path 已含 `表6-2` 时**不再**追加 `表格 T9`（`shouldShowTableNo`）。  
+有 segments 时**不**重复渲染证据级位置行；置信度挂在第一组 segment meta。
+
+## 源文档弹窗
+
+- `highlightEvidences` → `{ elements, evidence, segment?, segmentIndex? }[]`
+- 工具栏按**合并后组数**：`段 N/M · 第 X 页 · P-xxxx`
+- `initialSegmentIndex`：左栏点击 segment 打开弹窗并定位
+- `onLocateSummary`：`已定位 matched/total 段`
+
+## PDF
+
+- 有 segments：按组合并后 flatten，`bbox` 优先，excerpt 文本回退
+- 坐标：PyMuPDF 左上角 → pdf.js 左下角（见 [`pdfjs-highlight.md`](./pdfjs-highlight.md)）
 
 ## 踩坑
 
 | 现象 | 处理 |
 |------|------|
-| 0 命中 | 空白/标点归一化；`quote` 作补充片段；确认 render 完成后再 highlight |
-| 只亮一行 | 检查是否下发 `sourceBlockIds`、是否走 parent 扩展 |
-| 高亮偏移 | 检查是否错误扩展列表项 |
+| 0 命中 | 确认 render 完成后再 highlight；旧任务重跑审核拿 segments |
+| 表头误亮 | 勿对 parent 块堆 `expandParagraphRun`；用 segments |
+| 目录误匹配 | pageFrom 限定 + TOC 过滤 |
+| 左栏一堆小段 | 检查是否启用相邻段落合并 |
+| 表号重复展示 | path 含表号时 suppress `表格 {tableNo}` |
 
 ## 反模式
 
-- 假设 docx-preview 节点带 blockId 属性
-- 全局 `innerHTML` 搜索最长子串（误匹配率高）
+- 假设 docx-preview 节点带 blockId
+- 全文最长子串搜索
+- 有 segments 仍叠加 expandParagraphRun 变体
+- 单独 synthetic caption 段 + `findTableAfterCaption`（易误亮表头）
+- 证据级 + segment 级双行位置 meta
 
 ## 项目来源
 
-多证据溯源预览，2026 年验证。
+多证据 parent 块 + 嵌表/docx 无 blockId，2026-06 验证。
