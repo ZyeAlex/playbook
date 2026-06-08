@@ -6,7 +6,7 @@
 
 ## 库
 
-npm **`docx-preview`**，动态 `import()` 减小首包。
+npm **`docx-preview`**（当前 0.3.x），动态 `import()` 减小首包。
 
 ## 推荐 renderAsync 参数
 
@@ -34,9 +34,38 @@ renderAsync(blob, bodyEl, styleEl, {
 | 回退缩放 | 0.85 | 测不到页宽时 |
 | 最小缩放 | 0.5 | |
 | 最大缩放 | 1.5 | 宽栏可放大铺满 |
-| CSS 变量 | `--docx-preview-scale` | 挂在 wrapper，`zoom` 应用 |
+| CSS 变量 | `--docx-source-scale` | 挂在 wrapper，`zoom` 应用 |
 
 流程：渲染完成 → **统一页宽** → **按容器算缩放** → `ResizeObserver` 监听容器变化重算。
+
+## 自动编号段落（docx-num-*）
+
+Word 自动编号在 docx-preview 中常渲染为：
+
+```html
+<p class="docx-num-20-0"><span>1</span>正文…</p>
+```
+
+库注入 `p.docx-num-*::before { content: counter(...); }` 与 span 内字面序号**重复显示**（如表 7-1 序号列 **11、22**）。
+
+**当前解法**（作用域 `.docx-source-body`，2026-06-08）— **隐藏伪元素序号**：
+
+```css
+.docx-source-body p[class*='docx-num-']::before {
+  content: none !important;
+  display: none !important;
+}
+```
+
+保留 span / 正文内已有数字。若仍双显，可追加隐藏首 span（按文档抽样）：
+
+```css
+.docx-source-body p[class*='docx-num-'] > span:first-child {
+  display: none;
+}
+```
+
+**勿**全局隐藏所有 `p > span:first-child`。
 
 ## 踩坑与解法
 
@@ -51,13 +80,19 @@ renderAsync(blob, bodyEl, styleEl, {
 
 ### 与后端块 ID 不对齐
 
-docx-preview **不会**输出 `data-block-id`。高亮必须走文本匹配策略，不能假设 DOM 与解析器块一一对应。
+docx-preview **不会**输出 `data-block-id`。高亮必须走文本 / segment 匹配，不能假设 DOM 与解析器块一一对应。
+
+### 表内 `<p>` 与表体 `<table>`
+
+表格单元格内也可能有 `docx-num-*` 段落（序号列）。高亮整表 `<table>` 时，序号双显问题仍靠上文 CSS 修正，与是否加 `docx-source-highlight` 无关。
 
 ## 反模式
 
 - 在 iframe 里嵌 Office Online 做内网预览（依赖外网、难高亮）
 - 单容器同时塞 body+style（样式污染、难清理）
+- 全局隐藏所有 `p > span:first-child`（会误伤非编号段落）
+- 用 JS 后处理改 docx-preview 注入的 style 标签（升级库易丢）
 
 ## 项目来源
 
-文档合规审查类 Web 产品，2026 年验证。
+文档合规审查类 Web 产品，2026 年验证；表 7-1 序号双显 2026-06-08。

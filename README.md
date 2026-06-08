@@ -34,7 +34,7 @@ playbook/
 |------|--------|------|
 | L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor；可选前后端骨架） | [`patterns/project-init.md`](./patterns/project-init.md) |
 | L0b | 后端 / 前端目录分层（初始化结构时必读） | [`backend/project-structure.md`](./backend/project-structure.md)、[`frontend/project-structure.md`](./frontend/project-structure.md) |
-| L1 | docx 预览 + 原文高亮 | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md`；定位层见 `backend/evidence-locate-segments.md` |
+| L1 | docx 预览 + 原文高亮（segments / Context Unit 合并） | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md`；契约 `backend/evidence-locate-segments.md` |
 | L2 | 文档审核 RAG 后端 | `document/` → `rag/` 按序阅读 |
 | L3 | Excel 规则提取 | `backend/excel-rule-extract.md` |
 | L4 | 模型、热重载、长任务 | `ops/` + `backend/async-job-resume.md` |
