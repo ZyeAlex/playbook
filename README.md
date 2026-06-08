@@ -3,6 +3,17 @@
 > **定位**：跨项目累积的**工具级经验库**。每个项目结束后把可复用做法**合并进对应原子文件**，供下一项目按需查阅。  
 > **不是**：某一项目的目录说明、需求文档或排期记录。
 
+## 新项目一键初始化
+
+把 `playbook/` 放进业务仓库后，对 Cursor 说：
+
+```text
+阅读 playbook/，初始化项目
+```
+
+代理将按 [`patterns/project-init.md`](./patterns/project-init.md) 生成 **`memory/` + `AGENTS.md` + `.cursor/rules/` + `.cursor/skills/`**。  
+（可附带 PRD/原型路径与项目名；详见 project-init §4 完整指令模板。）
+
 ## 目录分桶
 
 ```
@@ -21,7 +32,7 @@ playbook/
 
 | 层级 | 何时读 | 路径 |
 |------|--------|------|
-| L0 | **新项目：创建 memory** | [`patterns/memory-bootstrap.md`](./patterns/memory-bootstrap.md) |
+| L0 | **新项目：初始化项目**（memory + AGENTS.md + Cursor） | [`patterns/project-init.md`](./patterns/project-init.md) |
 | L1 | docx 预览 + 原文高亮 | `frontend/docx-preview.md` → `frontend/evidence-highlight-dom.md` |
 | L2 | 文档审核 RAG 后端 | `document/` → `rag/` 按序阅读 |
 | L3 | Excel 规则提取 | `backend/excel-rule-extract.md` |
@@ -46,7 +57,8 @@ playbook/
 
 | 文件 | 内容 |
 |------|------|
-| [memory-bootstrap.md](./patterns/memory-bootstrap.md) | **如何创建 memory**（起步结构、步骤、AI 指令） |
+| [project-init.md](./patterns/project-init.md) | **初始化项目**（memory + AGENTS.md + Rules/Skills；触发语见文内） |
+| [memory-bootstrap.md](./patterns/memory-bootstrap.md) | 别名 → project-init §3（仅 memory 速查） |
 | [playbook-contribute.md](./patterns/playbook-contribute.md) | **如何把项目经验提取进 playbook**（分桶、写法、提交） |
 | [rag-document-review.md](./patterns/rag-document-review.md) | 规则审文档：架构模式与硬约束 |
 
