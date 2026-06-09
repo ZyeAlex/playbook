@@ -21,6 +21,7 @@
 
 ```txt
 frontend/
+├── .gitignore              # node_modules、dist 等（模板见 project-init §3 Step 5.2）
 ├── index.html
 ├── package.json
 ├── vite.config.js          # /api 代理 → localhost:8000
@@ -127,6 +128,13 @@ npm run dev    # http://localhost:5173
 npm run build
 npm test       # vitest
 ```
+
+## `.gitignore`
+
+初始化前端结构时**必须**创建 `frontend/.gitignore`。  
+完整模板 → [`patterns/project-init.md`](../patterns/project-init.md) §3 Step 5.2。
+
+要点：忽略 `node_modules/`、`dist/`、`.vite/`、`.env*`（保留 `.env.example`）。
 
 ## 反模式
 

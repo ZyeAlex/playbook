@@ -22,7 +22,7 @@
 backend/
 ├── pyproject.toml          # 依赖、pytest、uvicorn 默认参数
 ├── .env.example            # 环境变量模板（勿提交 .env）
-├── .gitignore              # .venv、__pycache__、data/*.db 等
+├── .gitignore              # Python 运行时忽略（模板见 project-init §3 Step 5.1）
 ├── dev.ps1 / dev.bat       # 一键启动（可选）
 ├── README.md               # 启动命令与分层说明
 ├── data/                   # 运行时数据（gitignore 大文件/缓存）
@@ -120,6 +120,17 @@ uv sync
 uv run uvicorn src.main:app --reload --reload-dir src --host 0.0.0.0 --port 8000
 uv run pytest
 ```
+
+## `.gitignore`
+
+初始化后端结构时**必须**创建 `backend/.gitignore`。  
+完整模板 → [`patterns/project-init.md`](../patterns/project-init.md) §3 Step 5.1。
+
+要点：
+
+- 忽略 `.venv/`、`__pycache__/`、`.pytest_cache/`、`.env`
+- 运行时数据按目录忽略：`data/uploads/`、`data/ocr/`、`data/*.db`
+- **勿**整包忽略 `data/`，以便提交种子 JSON 等静态文件
 
 ## 反模式
 

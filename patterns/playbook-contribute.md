@@ -62,18 +62,23 @@
 
 新建文件 → 必须更新 `playbook/README.md` 对应分桶表格。
 
-### 6. 提交 Playbook 仓库
+### 6. 提交 Playbook 仓库（必做）
 
-playbook 是**独立 git 仓库**（与业务项目分开）：
+**Canonical 远程**：[https://github.com/ZyeAlex/playbook](https://github.com/ZyeAlex/playbook)
+
+**每轮 playbook 更新完成后**，Agent 在 **playbook 仓库根目录** 自动 `commit` 并 **`push origin main`**（见 [`README.md`](../README.md)「Playbook 更新后：自动提交」）。不要等用户说「提交一下」。
 
 ```bash
-cd playbook
+cd /path/to/playbook   # clone: git clone https://github.com/ZyeAlex/playbook.git
 git add .
 git commit -m "playbook: {简短说明合并了什么}"
-git push
+git push origin main
+git status
 ```
 
-业务项目里只保留对 playbook 的引用（如 memory README 链到 playbook），不要把 playbook 全文复制进业务仓库。
+业务项目内的 `playbook/` 若是副本：改完后须同步到上述独立仓库并 push，避免 GitHub 与本地副本分叉。
+
+业务项目里只保留对 playbook 的引用（如 memory README 链到 playbook），不要把 playbook 全文复制进 memory。
 
 ---
 
@@ -87,8 +92,7 @@ git push
 - 只改 playbook 里已有原子文件，或按规范新建并更新 README 索引
 - 每条经验按：适用场景 / 推荐参数 / 踩坑 / 反模式
 - 不要写进 playbook：阶段进度、backlog、本项目专有契约
-
-完成后列出改了哪些 playbook 文件。
+- 完成后列出改了哪些 playbook 文件，在 https://github.com/ZyeAlex/playbook 仓库根目录 commit + push origin main
 ```
 
 ---
@@ -97,5 +101,5 @@ git push
 
 - 把整份 memory 或实现说明贴进 playbook  
 - 每个项目新建 `project-xxx-notes.md` 堆在 playbook 根目录  
-- 只改业务仓库里的 playbook 副本却不 push 独立 playbook 仓库  
+- 只改业务仓库里的 playbook 副本却不 push [ZyeAlex/playbook](https://github.com/ZyeAlex/playbook) 远程  
 - 写「详见某某文件第几行」类项目内引用  
