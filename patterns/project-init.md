@@ -14,8 +14,8 @@
 
 ```
 {项目根}/
-├── .gitignore                         # 排除 memory/playbook/.cursor/docs
-├── AGENTS.md                          # 薄层：命令、导航、边界（跨工具可读）
+├── .gitignore                         # 排除 AI 基线、设计源、playbook 副本（见 §3 Step 1b）
+├── AGENTS.md                          # 薄层：命令、导航、边界（本地维护，不进业务 git）
 ├── memory/
 │   ├── README.md                      # L0 入口 + 渐进式披露 + source_of_truth
 │   ├── requirements/                  # L1 需求与业务事实（原子文件）
@@ -63,7 +63,7 @@
 | **薄层 AGENTS.md** | 50～120 行：命令 + 导航表 + 边界；细节链到 memory/playbook |
 | **Rules 薄、Skills 链 playbook** | Rule 写硬约束与导航；Skill 写触发场景 + 指向 playbook 原子文件 |
 | **查阅顺序 > manifest** | README 写清「先读哪」；manifest.json 项目变大再加 |
-| **Git 分层忽略** | 根 `.gitignore` 排除 AI/docs；`backend/`、`frontend/` 各自 `.gitignore` |
+| **Git 分层忽略** | 根 `.gitignore` 排除 AI 基线与设计源（含 `AGENTS.md`）；`backend/`、`frontend/` 各自 `.gitignore` |
 
 ---
 
@@ -188,7 +188,16 @@ memory/
 
 与 Step 1 同步创建（若已存在则**补全缺失项**，勿删用户自定义规则）。
 
-业务 git **只跟踪代码与 AGENTS.md**；AI 协作文档、设计源、playbook 副本不进仓：
+业务 git **只跟踪业务代码**（`backend/`、`frontend/` 等）；下列路径**本地生成、各自维护或另有独立仓库**，一律不进业务远程：
+
+| 忽略项 | 原因 |
+|--------|------|
+| `memory/` | 本项目需求/结构/进度快照，Agent 本地维护 |
+| `playbook/` | 跨项目工具配方，canonical 在独立 git 仓库 |
+| `.cursor/` | Cursor Rules / Skills，IDE 本地配置 |
+| `docs/` | PRD、原型、架构说明等设计源文档 |
+| `AGENTS.md` | 薄层 Agent 入口，随本地 memory/playbook 链更新 |
+| `skills-lock.json` | Cursor Skills 锁定文件，随本机插件变化 |
 
 ```gitignore
 # AI 协作文档与配方（本地或独立仓库维护，不进业务 git）
@@ -196,10 +205,14 @@ memory/
 playbook/
 .cursor/
 docs/
+AGENTS.md
+skills-lock.json
 
 # OS
 .DS_Store
 ```
+
+**若已误提交远程**：`git rm --cached AGENTS.md skills-lock.json`，补全上表忽略项后 commit + push；`docs/` 等目录同理。
 
 > `backend/`、`frontend/` 的运行时忽略（`node_modules/`、`.venv/`、`data/uploads/` 等）写在各自子目录 `.gitignore`，见 Step 5。
 
@@ -335,7 +348,7 @@ description: >-
 ## 执行要点
 
 1. 读设计来源 → 建 memory 分文件夹结构（README + requirements/structure/progress）
-2. 建根目录 `.gitignore`（排除 memory/playbook/.cursor/docs）— 见 project-init §3 Step 1b
+2. 建根目录 `.gitignore`（排除 memory/playbook/.cursor/docs/AGENTS.md/skills-lock.json）— 见 project-init §3 Step 1b
 3. 建根目录 AGENTS.md（薄层：命令 + 导航 + 边界）
 4. 建 `.cursor/rules/{slug}-agent-nav.mdc`（alwaysApply）
 5. 若有明确领域（如 RAG 审文档）→ 按 project-init §6 加领域 Skill/Rule
@@ -521,7 +534,7 @@ slug：{小写短横线，如 my-app}
 
 请生成：
 1. memory/README.md + requirements/ + structure/ + progress/（各含 README 与必要原子文件）
-2. 根目录 `.gitignore`（排除 memory/、playbook/、.cursor/、docs/）
+2. 根目录 `.gitignore`（排除 memory/、playbook/、.cursor/、docs/、AGENTS.md、skills-lock.json）
 3. 根目录 AGENTS.md
 4. .cursor/rules/{slug}-agent-nav.mdc
 5. .cursor/skills/project-init/SKILL.md
@@ -565,7 +578,7 @@ slug：{小写短横线，如 my-app}
 | 需求 / 业务规则 | `memory/requirements/` 对应原子文件 + README 日期 |
 | 目录 / API / 模块 | `memory/structure/` 对应原子文件 |
 | 命令 / 边界调整 | `AGENTS.md` + `{slug}-agent-nav.mdc` |
-| Git 忽略规则 | 根 `.gitignore`（AI/docs）；`backend/`、`frontend/` 各自 `.gitignore` |
+| Git 忽略规则 | 根 `.gitignore`（AI 基线 + 设计源，见 §3 Step 1b）；`backend/`、`frontend/` 各自 `.gitignore` |
 | 工具踩坑 | playbook 对应原子文件（**不进 memory**） |
 | 某文件夹膨胀 | 在该文件夹内继续拆原子文件；更新文件夹 README 索引表 |
 | 项目结束 | `playbook/patterns/playbook-contribute.md` |
